@@ -26,7 +26,8 @@ exports.create = async (req, res, next) => {
 
             var book_in_books = await bookService.extractBookData(book_in_dbs);
             book_in_books.quantity = book.quantity;
-            if (book_in_dbs.temp_quantity > book_in_books.quantity) {
+            book_in_books.temp_quantity = undefined;
+            if (book_in_dbs.quantity - book_in_dbs.temp_quantity < book_in_books.quantity) {
                 return next(new ApiError(450, "Số lượng sách trong kho không đủ"));
             }
 
@@ -103,6 +104,7 @@ exports.update = async (req, res, next) => {
 
             var book_in_books = await bookService.extractBookData(book_in_dbs);
             book_in_books.quantity = book.quantity;
+            book_in_books.temp_quantity = undefined;
 
             if (book_in_dbs.quantity < book_in_books.quantity) {
                 return next(new ApiError(400, "Số lượng sách trong kho không đủ"));
